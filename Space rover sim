@@ -1,0 +1,382 @@
+#include <iostream>
+#include <fstream>
+using namespace std;
+int material=0;
+int fuel = 100;
+int unknown = 0;
+int Data = 0;
+int totalData=0;
+int nextEvent=0;
+bool story[4]={false,false,false,false};
+const int X=10,Y=20;
+int xPos=5,yPos=5;//tracking variables
+int arr[X][Y];
+int depth[X][Y];
+bool linked=false,linked2=false;//linked to the stations
+int stationFuel=0;
+void printArr();
+void treasure();
+void research();
+void transmit();
+void event();
+void newPlace();
+void storyPt1();
+void storyPt2();
+void storyPt2()
+{
+    int a,b;
+    cout<<"The research station was a big success.\nWe've learned more about Mars than in the last 30 years of exploring.";
+    cin.ignore();
+    cout<<"\nThanks to nanotechnology the research station will now build it's own launch pad to send material back to Earth\n";
+    cin.ignore();
+    cout<<"\nBe ready to find a lot of fuel and material\n";
+    cin.ignore();
+    newPlace();
+    while(arr[a][b]==5)
+    {
+        int a=rand()%X;
+        int b=rand()%Y;
+    }
+
+    arr[a][b]=6;
+    while(arr[a][b]==5||arr[a][b]==6)
+    {
+        int a=rand()%X;
+        int b=rand()%Y;
+    }
+    arr[a][b]=7;
+    story[1]=false;
+}
+void storyPt1()
+{
+    cout<<"You have done well enough that there is a new mission planned.\n";
+    cin.ignore();
+    newPlace();
+    int a=rand()%X;
+    int b=rand()%Y;
+    //search for a spot that the player isn't using for a research location
+    while(arr[a][b]==5)
+    {
+        a=rand()%X;
+        b=rand()%Y;
+    }
+    arr[a][b]=6;
+    story[0]=false;
+}
+void newPlace()
+{
+    for(int i=0;i<X;i++)
+    {
+        for(int j=0;j<Y;j++)
+        {
+            arr[i][j]=0;
+            depth[i][j]=0;
+        }
+    }
+    xPos=rand()%X,yPos=rand()%Y;
+    arr[xPos][yPos]=5;
+}
+void event()
+{
+    if(totalData>500)
+    {
+        cout<<"The government is interested in the results";
+        cin.ignore();
+        cout<<"More money will be allocated to your program";
+        cin.ignore();
+        fuel=100;
+        if(totalData>1000&&story[0])
+            storyPt1();
+        else 
+        {
+            if(totalData>5000&&story[1])
+            {
+                storyPt2();
+            }
+        }
+    }
+}
+void transmit()
+{
+    fuel--;
+    cout<<"Data sent\n";
+    cin.ignore();
+    totalData+=Data;
+    Data=0;
+    event();
+}
+void research()
+{
+    if(unknown<0)
+    {
+        unknown=0;
+        cout<<"nothing to research\n";
+        cin.ignore();
+        return;
+    }
+    while(unknown>0)
+    {
+        Data+=rand()%7+1;
+        unknown--;
+        fuel--;
+    }
+    cout<<"Data: "<<Data<<endl;
+    cin.ignore();
+}
+void treasure()
+{
+    cout<<endl;
+    int r = rand()%9999;
+    if(r>4999)
+        cout<<"nothing found\n";
+    else if(r<4999 && r>3999)
+    {
+        cout<<"Unknown material\n";
+        unknown++;
+    }
+    else
+    {
+        material--;
+        r = rand()%15+1;
+        cout<<r<<" fuel found\n";
+        fuel+=r;
+    }
+
+}
+void printArr()
+{
+    cout<<"===========================\n";
+    for(int i=0;i<X;i++)
+    {
+        for(int j=0;j<Y;j++)
+        {
+            if(arr[i][j]!=5&&arr[i][j]!=6)//5 is the player 6 is the research location
+            {
+                if(depth[i][j]==0)
+                    cout<<".";
+                if(depth[i][j]>-24&&depth[i][j]<0)
+                    cout<<"*";
+                if(depth[i][j]<-24&&depth[i][j]>=-49)
+                    cout<<"o";
+                if(depth[i][j]<-49&&depth[i][j]>=-74)
+                    cout<<"0";
+                if(depth[i][j]<-74&&depth[i][j]>=-100)
+                    cout<<"O";
+                if(depth[i][j]>25)
+                    cout<<"^";
+            }
+            else
+            {
+                if(arr[i][j]==5)
+                    cout<<"@";
+                if(arr[i][j]==6)
+                    cout<<"R";
+                if(arr[i][j]==7)
+                    cout<<"L";
+            }
+        }
+        cout<<endl;
+    }
+    cout<<"==========================="<<endl;
+}
+
+int main()
+{
+    fstream data;
+    data.open("data.txt");
+    newPlace();
+    char move='0';
+    //wasd for movement x for digging f for filling in material
+    int days;
+    printArr();
+    for(days=0;move!='.'||fuel<=0;days++)
+    {
+        //pre-interface routines
+        if(stationFuel>0)
+            Data+=rand()%5+1;
+        //user display
+        cout<<xPos<<" "<<yPos<<" depth:"<<depth[xPos][yPos]<<" fuel: "<<fuel
+        <<" material: ";
+        cout<<material<<" unknown: "<<unknown;
+        cout<<" data: ";
+        cout<<Data<<endl;
+        stationFuel--;
+        cout<<"movement?(wasd to move, x to dig, f to fill, r to research, t to transmit, g to fuel a station\n . to end the mission): "<<endl;
+        //input handling
+        cin>>move;
+        fuel--;
+        if(move=='a')
+        {
+                if(arr[xPos][yPos-1]!=6&&arr[xPos][yPos-1]!=7)
+                {
+                    if(yPos-1<0)
+                        cout<<"\nEdge of research area\n";
+                    else
+                        yPos--;
+                    arr[xPos][yPos]=5;
+                    arr[xPos][yPos+1]=0;
+                    move='0';
+                }
+                else
+                {
+                    if(arr[xPos][yPos-1]==6)
+                    {
+                        cout<<"\nYou have linked with the station\n";
+                        cin.ignore();
+                        linked=true;
+                    }
+                    if(arr[xPos][yPos-1]==7)
+                    {
+                        cout<<"\nYou have linked with the launch pad\n";
+                        cin.ignore();
+                        linked2=true;
+                    }
+                }
+        }
+        if(move=='d')
+        {
+                if(arr[xPos][yPos+1]!=6&&arr[xPos][yPos+1]!=7)
+                {
+                    if(yPos+1>Y-1)
+                        cout<<"\nEdge of research area\n";
+                    else
+                        yPos++;
+                    arr[xPos][yPos]=5;
+                    arr[xPos][yPos-1]=0;
+                    move='0';
+                }
+                else
+                {
+                    if(arr[xPos][yPos+1]==6)
+                    {
+                        cout<<"\nYou have linked with the station\n";
+                        cin.ignore();
+                        linked=true;
+                    }
+                    if(arr[xPos][yPos+1]==7)
+                    {
+                        cout<<"\nYou have linked with the launch pad\n";
+                        cin.ignore();
+                        linked2=true;
+                    }
+                }
+        }
+        if(move=='w')
+        {
+                if(arr[xPos-1][yPos]!=6&&arr[xPos-1][yPos]!=7)
+                {
+                    if(xPos-1<0)
+                        cout<<"\nEdge of research area\n";
+                    else
+                        xPos--;
+                    arr[xPos][yPos]=5;
+                    arr[xPos+1][yPos]=0;
+                    move='0';
+                }
+                else
+                {
+                    if(arr[xPos-1][yPos]==6)
+                    {
+                        cout<<"\nYou have linked with the station\n";
+                        cin.ignore();
+                    }
+                    if(arr[xPos-1][yPos]==7)
+                    {
+                        cout<<"\nYou have linked with the launch pad\n";
+                        cin.ignore();
+                        linked2=true;
+                    }
+                }
+        }
+        if(move=='s')
+        {
+                if(arr[xPos+1][yPos]!=6&&arr[xPos+1][yPos]!=7)
+                {
+                    if(xPos+1>X-1)
+                        cout<<"\nEdge of research area\n";
+                    else
+                        xPos++;
+                    arr[xPos][yPos]=5;
+                    arr[xPos-1][yPos]=0;
+                    move='0';
+                }
+                else
+                {
+                    if(arr[xPos+1][yPos]==6)
+                    {
+                        cout<<"\nYou have linked with the station\n";
+                        cin.ignore();
+                        linked=true;
+                    }
+                    if(arr[xPos+1][yPos]==7)
+                    {
+                        cout<<"\nYou have linked with the launch pad\n";
+                        cin.ignore();
+                        linked2=true;
+                    }
+                }
+        }
+        if(move=='x')
+        {
+            depth[xPos][yPos]--;
+            material++;
+            if(depth[xPos][yPos]<-100)
+            {
+                cout<<"\nMax depth reached\n";
+                material--;
+                depth[xPos][yPos]++;
+                fuel--;
+            }
+            if(depth[xPos][yPos]<10&&depth[xPos][yPos]>-100)
+            {
+                treasure();
+            }
+        }
+        if(move=='f')
+        {
+            if(material>0)
+            {
+                material--;
+                depth[xPos][yPos]++;
+                fuel--;
+            }
+        }
+        if(move=='r')
+        {
+            research();
+        }
+        if(move=='t')
+        {
+            transmit();
+        }
+        if(move=='g')
+        {
+            int amt=0;
+            if(linked)
+            {
+                if(stationFuel<0)
+                    stationFuel=0;
+                cout<<"\nTime to fuel up the station\n";
+                cin.ignore();
+                cout<<"\nHow much will you put in?\nFuel left: "<<stationFuel<<endl;
+                cin>>amt;
+                linked=false;
+                stationFuel+=amt;
+                fuel-=amt;
+                cout<<"Fuel now: "<<stationFuel<<"\nThe rover will now disconnect from the station\n";
+                cin.ignore();
+            }
+        }
+        printArr();
+    }
+    cout<<"\n\nLasted for "<<days<<" days\n";
+    data.close();
+    printArr();
+
+    return 0;
+}
+
+
+
+
+
