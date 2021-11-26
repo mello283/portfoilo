@@ -1,0 +1,165 @@
+#include <iostream>
+#include <cstdlib>
+#include <fstream>
+#include <ctime>
+using namespace std;
+ofstream output;
+class LList
+{
+public:
+    int value;
+    LList*Flinky;
+    LList*Blinky;
+};
+typedef LList * Node;
+Node ListHead;
+Node ListTail;
+LList*newNode()
+{
+    LList*temp;
+    temp=new LList();
+    temp->value=0;
+    temp->Flinky=NULL;
+    temp->Blinky=NULL;
+}
+void insert(int v);
+void printList();
+void printBackward();
+int findSize();
+void insertAfter(Node p,int v);
+void insert(int v)
+{
+    Node c,p,temp;
+    if(ListHead==NULL)
+    {
+        ListHead=newNode();
+        ListTail=newNode();
+        ListHead->value=v;
+        ListTail->value=v;
+    }
+    else
+    {
+        c=ListHead;
+        while(c)
+        {
+            p=c;
+            c=c->Flinky;
+        }
+        temp=newNode();
+        temp->value=v;
+        p->Flinky=temp;
+
+        c=temp;
+        ListTail=c;
+        ListTail->Blinky=p;
+    }
+}
+void printList()
+{
+    cout<<endl;
+    Node c,p;
+    c=newNode();
+    p=newNode();
+    c=ListHead;
+    while(c)
+    {
+        cout<<"c: "<<c->value<<" "<<"p: "<<p->value<<" ";
+        output<<"c: "<<c->value<<" "<<"p: "<<p->value<<" ";
+        p=c;
+        c=c->Flinky;
+        cout<<endl;
+        output<<endl;
+    }
+}
+void printBackward()
+{
+    cout<<endl;
+    Node c,p;
+    c=newNode();
+    p=newNode();
+    c=ListTail;
+    while(c)
+    {
+        cout<<"c: "<<c->value<<" "<<"p: "<<p->value<<" ";
+        output<<"c: "<<c->value<<" "<<"p: "<<p->value<<" ";
+        p=c;
+        c=c->Blinky;
+        cout<<endl;
+        output<<endl;
+    }
+}
+int findSize()
+{
+    Node c,p;
+    int i=0;
+    if(!ListHead)
+    {
+        return 0;
+    }
+    c=ListHead;
+    while(c)
+    {
+        p=c;
+        c=c->Flinky;
+        i++;
+    }
+    return i;
+}
+void insertAfter(Node p,int v)
+{
+    Node c,temp;
+    temp->value=v;
+    c->Flinky=p->Flinky;
+    p->Flinky=newNode();
+    c->Blinky=p;
+    if(c->Flinky!=NULL)
+        c->Flinky->Blinky=newNode();
+}
+int main()
+{
+    unsigned seed;
+    seed=time(0);
+    srand(seed);
+    Node c,p,temp;
+    output.open("linked list growth model.txt");
+    for(int i=0;i<2;i++)
+        insert(2);
+    p=ListTail->Blinky;
+    int i;
+    for(int i=2;i<15;i++)
+    {
+        insert((p->value + ListTail->value));
+        p=ListTail->Blinky;
+    }
+    int vals=0;
+    int r=(rand()%5)+1;
+for(int j=0;j<15;j++){
+    for(int i=0;i<r;i++)
+    {
+        ListTail=ListTail->Blinky;
+        vals++;
+        r=(rand()%5)+1;
+
+    }
+    ListTail->Flinky = NULL;
+    c = ListTail;
+    for(int i=3;i>0;i--)
+    {
+        p=c;
+        c=c->Blinky;
+    }
+
+    ListTail->value=c->value;
+    p=ListTail->Blinky;
+    for(int i=3;i>0;i--)
+    {
+        insert((p->value+ListTail->value));
+        p=ListTail->Blinky;
+    }
+    cout<<"Random Number: "<<r<<endl;
+    output<<"Random Number: "<<r<<endl;
+    printList();
+    }
+    output.close();
+    return 0;
+}
