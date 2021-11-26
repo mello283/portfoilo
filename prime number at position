@@ -1,0 +1,70 @@
+#include <iostream>
+#include <cmath>
+using namespace std;
+
+bool primeCheck(int number,int j);
+bool primeCheck(int number,int j=3)
+{
+
+    //composite
+    j+=2;
+    if(number%2==0)
+    {
+
+        if(number==2)
+        {
+            //cout<<"number was 2\n";
+            return true;
+        }
+        else
+        {
+            //cout<<"non-two even number\n";
+            return false;
+        }
+    }
+    //prime
+    if(j>=number)
+    {
+   //     cout<<"stopped at "<<j<<endl;
+        return true;
+    }
+    //composite
+    if(number%j==0)
+    {
+   //     cout<<"stopped at "<<j<<endl;
+        return false;
+    }
+    primeCheck(number,j);
+    
+}
+
+int main()
+{
+    int primeTarget=1;            
+    unsigned long long target=18446744073709551615;
+    cout<<"Which prime do you want?(1st 2nd etc)";
+    cin>>primeTarget;
+    int start=2;
+
+    int primeCount=0;
+    for(int i=start;i<target;i+=2)
+    {
+        if(primeCheck(i))
+        {
+            primeCount++;
+            if(primeCount==primeTarget)
+            {
+                cout<<"\nThe prime at that position is "<<i<<endl;
+            }
+            
+        }
+        if(i==2)
+            i++;
+           // cout<<"prime "<<endl;
+      //  else 
+        //    cout<<"not prime "<<endl;
+
+    }
+    //cout<<"\nNumber of primes: "<<primeCount;
+    return 0;
+}
