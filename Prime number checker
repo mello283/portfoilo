@@ -1,0 +1,51 @@
+#include <iostream>
+#include <cmath>
+using namespace std;
+
+bool primeCheck(unsigned long long number);
+bool primeCheck(unsigned long long number)
+{
+    static unsigned long long i=3;
+    //composite
+    i+=2;
+    if(number%2==0)
+    {
+        if(number==2)
+            return true;
+        cout<<"smallest factor 2"<<endl;
+        return false;
+    }
+    //prime
+    if(i>=number)
+    {
+        cout<<"smallest factor "<<i<<endl;
+        return true;
+    }
+    //composite
+    if(number%i==0)
+    {
+        cout<<"smallest factor "<<i<<endl;
+        return false;
+    }
+    primeCheck(number);
+    
+}
+
+int main()
+{
+    unsigned long long target=7;
+    unsigned long long primeNumber=7;
+    cout<<"Enter a number to check for prime\n";
+    cin>>primeNumber;
+    unsigned long long start=7;
+
+        if(primeCheck(primeNumber))
+        {
+            cout<<"prime "<<endl;
+
+        }
+        else 
+            cout<<"composite "<<endl;
+
+    return 0;
+}
