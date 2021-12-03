@@ -1,0 +1,28 @@
+//Inspired by the old scannerz toy from the early 2000s. If you scan a barcode it logs that barcode and then it tells you if the one you are scanning is the right one. 
+//Combine this code with a mobile device and c++ compiler for maximum fun
+#include <iostream>
+using namespace std;
+int main()
+{
+    int count=0;
+    string barcode="empty";
+    string temp="temp";
+    cout<<"\nScan a barcode to start hide and seek";
+    cin>>temp;
+    cout<<"\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
+    do
+    {
+        cout<<"\nScan a barcode...\n";
+        cin>>barcode;
+        if(barcode!=temp)
+            cout<<"\nNope, still haven't found it yet\n";
+        count++;
+    }while(barcode!=temp);
+    cout<<"\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nYou found it!\nIt took you "<<count;
+    if(count>1)
+        cout<<" tries";
+    else
+        cout<<" try";
+    cout<<"\n\a";
+    return 0;
+}
