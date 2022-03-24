@@ -1,0 +1,621 @@
+//work on the travel screen add things to buy and missions to complete
+//work on the breakdown kits
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <cmath>
+#include <conio.h>
+
+using namespace std;
+
+ofstream output;
+ifstream input;
+const int fuelStart=9999999;
+int research =0;
+class player
+{
+public:
+    int hp=10;
+    int hpLimit=10;
+    int money=1000;
+    long int fuel=fuelStart;
+    int finalBoss=0;
+    int boss=0;
+    int breakdowns=1;
+    int repairKits=1;
+    int common=0;
+    int uncommon=0;
+    int rare=0;
+    int megaLaser=0;
+    player();
+    ~player();
+};
+player p;
+bool continueGame=true;
+int getRand(int);
+void stats();
+void goodEvent();
+void badEvent();
+void travel();
+void enemyFight();
+void bossFight();
+void finalBoss();
+void manageShip();
+void outOfFuel();
+void gameOver();
+void addFuel();
+void repairShip();
+void spaceColony();
+void earth();
+void moon();
+player::player()
+{
+    input.open("data.txt");
+    input>>hp;
+    input>>hpLimit;
+    input>>money;
+    input>>fuel;
+    input>>finalBoss;
+    input>>boss;
+    input>>breakdowns;
+    input>>repairKits;
+    input>>common;
+    input>>uncommon;
+    input>>rare;
+    input>>megaLaser;
+    input.close();
+}
+player::~player()
+{
+    output.open("data.txt");
+    output<<hp<<" ";
+    output<<hpLimit<<" ";
+    output<<money<<" ";
+    output<<fuel<<" ";
+    output<<finalBoss<<" ";
+    output<<boss<<" ";
+    output<<breakdowns<<" ";
+    output<<repairKits<<" ";
+    output<<common<<" ";
+    output<<uncommon<<" ";
+    output<<rare<<" ";
+    output<<megaLaser<<" ";
+    output.close();
+}
+int getRand(int a)
+{
+    int r = (rand()%a)+1;
+    //cout<<endl<<r<<endl;
+    return r;
+}
+void stats()
+{
+    cout<<
+    "HP: "<<p.hp<<endl<<
+    "HP limit: "<<p.hpLimit<<endl<<
+    "Money: "<<p.money<<endl<<
+    "Fuel: "<<p.fuel<<endl<<
+    "Boss progress: "<<p.boss<<endl<<
+    "Final boss: "<<p.finalBoss<<endl<<
+    "Breakdowns: "<<p.breakdowns<<endl<<
+    "Repair kits: "<<p.repairKits<<endl<<
+    "Common: "<<p.common<<endl<<
+    "Uncommon: "<<p.uncommon<<endl<<
+    "Rare: "<<p.rare<<endl<<
+    "Mega Laser: "<<p.megaLaser<<endl;
+    cin.ignore();
+    cin.ignore();
+}
+void goodEvent()
+{
+    cout<<"Asteroid found!\a"<<endl;
+    p.common+=getRand(10);
+    p.uncommon+=getRand(4);
+    p.rare+=getRand(2);
+    cout<<"Common: "<<p.common<<endl;
+    cout<<"Uncommon: "<<p.uncommon<<endl;
+    cout<<"Rare: "<<p.rare<<endl;
+    cin.ignore();
+    cin.ignore();
+    manageShip();
+}
+void badEvent()
+{
+    cout<<"Enemy found!\a";
+    cin.ignore();
+    enemyFight();
+}
+void travel()
+{
+    //travel across the solar system
+    int choice;
+    cout<<"\nTravel menu\n";
+    cin.ignore();
+    cout<<"Choose where you want to go\n";
+    cout<<"1. Space colony, 2. Earth, 3. The Moon\n";
+    while(choice!=1&&choice!=2&&choice!=3)
+        cin>>choice;
+    switch(choice)
+    {
+        case 1:
+            spaceColony();
+            break;
+        case 2:
+            earth();
+            break;
+        case 3:
+            moon();
+            break;
+    }
+}
+void spaceColony()
+{
+    cout<<"You enter the space market";
+    cin.ignore();
+    int choice=-1,qty=-0;
+    cout<<"\nWhat will you buy?\n";
+    while(choice!=0&&choice!=1&&choice!=2&&choice!=3&&choice!=4)
+    {
+        cout<<"\ntype 1 for repair kit, type 2 for breakdown kit, type 3 to upgrade hp, type 4 for megalaser, type 5 for nothing\n";
+        cin>>choice;
+    }
+    do
+    {
+        cout<<"\nHow many?\n";
+        cin>>qty;
+    }while(qty<=-1);
+    int price=0;
+    switch(choice)
+    {
+        case 1:
+            price=200;
+            break;
+        case 2:
+            price=500;
+            break;
+        case 3:
+            price=1000*(p.hpLimit-9);
+            break;
+        case 4:
+            price=20000;
+            break;
+        case 5:
+            price=0;
+            break;
+    }
+    if((price*qty)>p.money)
+    {
+        cout<<"You don't have enough!\ntry your order again\n";
+        cin.ignore();
+        choice=5;
+    }
+    switch(choice)
+    {
+        case 1:
+            p.repairKits+=qty;
+            p.money-=price*qty;
+            break;
+        case 2:
+            p.breakdowns+=qty;
+            p.money-=price*qty;
+            break;
+        case 3:
+            p.hpLimit+=qty;
+            p.money-=price*qty;
+            break;
+        case 4:
+            p.megaLaser+=qty;
+            p.money-=price*qty;
+            break;
+        case 5:
+            break;
+    }
+    cin.ignore();
+    stats();
+}
+void earth()
+{
+    cout<<"Welcome to Earth!\nThe market for ores is great here\n";
+    cin.ignore();
+    cout<<"\nWhat would you like to sell?\n";
+    int choice;
+    while(choice!=1&&choice!=2&&choice!=3)
+    {
+        cout<<"\ntype 1 for commons("<<p.common<<"), type 2 for uncommons("<<p.uncommon<<"), type 3 for rares("<<p.rare<<")\n";
+        cin>>choice;
+    }
+    int qty,price;
+    //check for the type first, then determine price and qty the player has
+    switch(choice)
+    {
+        case 1:
+            qty=p.common;
+            price=500;
+            break;
+        case 2:
+            qty=p.uncommon;
+            price=1000;
+            break;
+        case 3:
+            qty=p.rare;
+            price=10000;
+            break;
+    }
+    int sellQty=-1;
+    while(sellQty<0)
+    {
+        cout<<"\nHow many?\n";
+        cin>>sellQty;
+    }
+    while(sellQty>qty)
+    {
+        cout<<"Not enough\nTry again....\n";
+        cin.ignore();
+    }
+    //subtract from the player's inventory
+    switch(choice)
+    {
+        case 1:
+        p.common-=sellQty;
+            break;
+        case 2:
+        p.uncommon-=sellQty;
+            break;
+        case 3:
+        p.rare-=sellQty;
+            break;
+    }
+    cout<<"\nYou made: "<<price*qty<<endl;
+    cin.ignore();
+    p.money+=price*qty;
+    stats();
+}
+void moon()
+{
+    cout<<"Welcome to the moon outpost\n";
+    cin.ignore();
+    cout<<"We need as much power as we can get.\nWe'll pay of course\n";
+    cin.ignore();
+    cout<<"How much fuel can you spare? "<<p.fuel<<endl;
+    int amt=0;
+    do
+    {
+        cin>>amt;
+    }while(p.fuel<amt);
+    p.fuel-=amt;
+    research+=amt;
+    p.money+=amt/1000;
+    cout<<"Recieved "<<amt/1000<<endl;
+    cin.ignore();
+    cin.ignore();
+}
+void enemyFight()
+{
+    if(p.boss>100)
+    {
+        p.boss=0;
+        bossFight();
+    }
+    cout<<"\nA small fighter ship appears\n";
+    cin.ignore();
+    int choice=0;
+    int opponent=rand()%5+5;
+    while(choice!=1)
+    {
+        if(getRand(42069)%2==0)
+        {
+            cout<<"You hit their ship!";
+            cin.ignore();
+            opponent--;
+            cout<<"\nHit enter to keep going in the fight\nType 1 and hit enter to flee, type anything else and hit enter to continue\n";
+            cout<<"Your HP: "<<p.hp<<endl;
+            cout<<"Enemy HP: "<<opponent<<endl;
+            cin>>choice;
+        }
+        else
+        {
+            cout<<"You've been hit!";
+            cin.ignore();
+            p.hp--;
+            cout<<"\nHit enter to keep going in the fight\nType 1 and hit enter to flee, type anything else and hit enter to continue\n";
+            cout<<"Your HP: "<<p.hp<<endl;
+            cout<<"Enemy HP: "<<opponent<<endl;
+            cin>>choice;
+        }
+        if(p.hp<1)
+        {
+            gameOver();
+            cout<<"You lose!"<<endl;
+            cin.ignore();
+            cin.ignore();
+            choice=1;
+            return;
+        }
+        if(opponent<1)
+        {
+            cout<<"You win!\n";
+            cin.ignore();
+            int amt=getRand(5000)+500;
+            cout<<"You found "<<amt<<" credits in the wreckage\n";
+            p.money+=getRand(5000)+500;
+            cin.ignore();
+            p.boss+=getRand(25);
+            cout<<"Boss progress: "<<p.boss<<endl;
+            cin.ignore();
+            choice=1;
+        }
+    }
+    manageShip();
+
+}
+void bossFight()
+{
+    if(p.finalBoss>100)
+    {
+        p.finalBoss=0;
+        finalBoss();
+    }
+    cout<<"\nA medium fighter ship appears\n";
+    cin.ignore();
+    int choice=0;
+    int opponent=rand()%5+8;
+    while(choice!=1)
+    {
+        if(getRand(42069)%2==0)
+        {
+            cout<<"You hit their ship!";
+            cin.ignore();
+            opponent--;
+            cout<<"\nHit enter to keep going in the fight\nType 1 and hit enter to flee, type anything else and hit enter to continue\n";
+            cout<<"Your HP: "<<p.hp<<endl;
+            cout<<"Enemy HP: "<<opponent<<endl;
+            cin>>choice;
+        }
+        else
+        {
+            cout<<"You've been hit!";
+            cin.ignore();
+            p.hp--;
+            cout<<"\nHit enter to keep going in the fight\nType 1 and hit enter to flee, type anything else and hit enter to continue\n";
+            cout<<"Your HP: "<<p.hp<<endl;
+            cout<<"Enemy HP: "<<opponent<<endl;
+            cin>>choice;
+        }
+        if(p.hp<1)
+        {
+            gameOver();
+            cout<<"You lose!"<<endl;
+            cin.ignore();
+            cin.ignore();
+            choice=1;
+            return;
+        }
+        if(opponent<1)
+        {
+            cout<<"You win!\n";
+            cin.ignore();
+            int amt = getRand(5000)+5000;
+            cout<<"You found "<<amt<<" credits in the wreckage\n";
+            p.money+=amt;
+            cin.ignore();
+            p.finalBoss+=getRand(25);
+            cout<<"Final boss progress: "<<p.finalBoss<<endl;
+            cin.ignore();
+            cout<<"You get +1 HP permanantly\n";
+            cin.ignore();
+            p.hpLimit++;
+            cin.ignore();
+            cin.ignore();
+            choice=1;
+        }
+    }
+    manageShip();
+}
+void finalBoss()
+{
+    cout<<"\nThe final boss ship appears\n";
+    cin.ignore();
+    int choice=0;
+    int opponent=rand()%5+15;
+    while(choice!=1)
+    {
+        if(getRand(10)%2==0)
+        {
+            cout<<"You hit their ship!";
+            cin.ignore();
+            opponent--;
+            cout<<"\nHit enter to keep going in the fight\nType 1 and hit enter to flee, type anything else and hit enter to continue\n";
+            cout<<"Your HP: "<<p.hp<<endl;
+            cout<<"Enemy HP: "<<opponent<<endl;
+            cin>>choice;
+        }
+        else
+        {
+            cout<<"You've been hit!";
+            cin.ignore();
+            p.hp--;
+            cout<<"\nHit enter to keep going in the fight\nType 1 and hit enter to flee, type anything else and hit enter to continue\n";
+            cout<<"Your HP: "<<p.hp<<endl;
+            cout<<"Enemy HP: "<<opponent<<endl;
+            cin>>choice;
+        }
+        if(p.hp<1)
+        {
+            gameOver();
+            cout<<"You lose!"<<endl;
+            cin.ignore();
+            cin.ignore();
+            choice=1;
+            return;
+        }
+        if(opponent<1)
+        {
+            cout<<"You win!\n";
+            cin.ignore();
+            cout<<"You found "<<getRand(5000)+30000<<" credits in the wreckage\n";
+            cin.ignore();
+            cout<<"You get +10 to your HP permanantly\n";
+            cin.ignore();
+            cin.ignore();
+            p.hpLimit+=10;
+            choice=1;
+        }
+    }
+    manageShip();
+}
+void manageShip()
+{
+    int choice=0;
+    while(choice!=1&&choice!=2&&choice!=3&&choice!=4&&choice!=5)
+    {
+        cout<<"\ntype 1 to add fuel, type 2 to travel, type 3 for stats menu, type 4 to use a repair kit, type 5 to leave this menu, \n";
+        cin>>choice;
+    }
+    switch(choice)
+    {
+    case 1:
+        addFuel();
+        break;
+    case 2:
+        travel();
+        break;
+    case 3:
+        stats();
+        manageShip();
+        break;
+    case 4:
+        repairShip();
+        break;
+    case 5:
+        return;
+        break;
+    }
+}
+void addFuel()
+{
+    cout<<"\nChoose which ore to use as fuel\n";
+    int choice=0;
+    while(choice!=4)
+    {
+        cout<<"\n1. common, 2. uncommon, 3.rare, 4.exit \n";
+        cin>>choice;
+        cout<<"Common: "<<p.common<<endl;
+        cout<<"Uncommon: "<<p.uncommon<<endl;
+        cout<<"Rare: "<<p.rare<<endl;
+        cin.ignore();
+        if(choice==1&&p.common>0)
+        {
+            p.common--;
+            p.fuel+=1000;
+        }
+        if(choice==2&&p.uncommon>0)
+        {
+            p.uncommon--;
+            p.fuel+=5000;
+        }
+        if(choice==3&&p.rare>0)
+        {
+            p.rare--;
+            p.fuel+=15000;
+        }
+        if(choice==4)
+            return;
+        
+        choice=-1;
+    }
+
+}
+void repairShip()
+{
+    if(p.repairKits>0)
+        p.repairKits--;
+    else
+    {
+        cout<<"\nYou don't have a repair kit\n";
+        cin.ignore();
+        return;
+    }
+    p.hp=p.hpLimit;
+    cout<<"Ship repaired!"<<endl;
+    cin.ignore();
+    cin.ignore();
+}
+void outOfFuel()
+{
+    cout<<"Out of Fuel!\a\n";
+    cin.ignore();
+    int choice;
+    cout<<"Breakdown process started...";
+    cin.ignore();
+    if(p.breakdowns>0)
+    {
+        p.breakdowns--;
+        p.fuel+=10000;
+    }
+    else
+    {
+        cout<<"You are stuck!\nGame Over!";
+        cin.ignore();
+        p.fuel=1;
+        gameOver();
+        return;
+    }
+    cout<<"You have "<<p.breakdowns<<" left\n";
+    cin.ignore();
+}
+void gameOver()
+{
+    continueGame=false;
+    p.hp=10;
+    p.hpLimit=10;
+    p.money=1000;
+    p.fuel=fuelStart;
+    p.finalBoss=0;
+    p.boss=0;
+    p.breakdowns=1;
+    p.repairKits=1;
+    p.common=0;
+    p.uncommon=0;
+    p.rare=0;
+    p.megaLaser=0;
+}
+int main()
+{
+    char a;
+    long int bigUn=1234567;//how long between interactions
+ //   signed int f,big;
+ //   cout<<"type a number between 1-1000000000 for difficulty";
+ //   cin>>big;
+ //   bigUn=abs(big);
+ //   cout<<"type a number for fuel";
+ //   cin>>f;
+ //   p.fuel=abs(f);
+    while(continueGame)
+    {
+        if(getRand(bigUn)==bigUn-1)
+        {
+            goodEvent();
+        }
+        else if(getRand(bigUn)==1)
+        {
+            badEvent();
+        }
+        p.fuel--;
+        cout<<p.fuel<<endl;
+        if(p.fuel<1)
+        {
+            outOfFuel();
+        }
+    }
+    return 0;
+}
+
+//code to recognise input
+/*
+    int a;
+    while(1){
+    a=getch();
+    if(a!=-1)
+    cout<<a;
+    }
+*/
