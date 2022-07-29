@@ -1,0 +1,24 @@
+#-------------------------------------------------------------------------------
+# Matt Morrison
+# fibonacci sequence
+#-------------------------------------------------------------------------------
+
+def fib(one,two,loops):
+    temp = one + two
+    print(temp)
+    one = two
+    two = temp
+    loops -= 1
+    if loops == 0:
+        return
+    fib(one,two,loops)
+def main():
+    one = 0
+    two = 1
+    loops = input("How many numbers of the sequence to generate after the first two?")
+    loops = int(loops)
+    print(one)
+    print(two)
+    fib(one,two,loops)
+if __name__ == '__main__':
+    main()
