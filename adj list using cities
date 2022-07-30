@@ -1,0 +1,140 @@
+#include <stdio.h>
+#include <iostream>
+#include <vector>
+#include <utility>
+#include <algorithm>
+#include <string>
+#include <chrono>
+#include <random>
+#include <bits/stdc++.h>
+using namespace std;
+int getRand(int,int);
+int numVerts=5;
+class graph
+{
+    public:
+    map<int,list<int>>adj;//map of edges
+    map<int,bool>visited;//map of visited nodes for traversal
+    map<int,list<int>>weights;//weight of edges
+    map<int,string>data;
+    void addEdge(int,int,int);//adds the connection and weight
+    void addVertex(int v);//adds or overwrites the vertex at v
+    void addDoubleEdge(int,int,int);
+    void showGraph();//calls showVertex for the entire graph
+    void showVertex(int v);//shows connections for vertex v
+    void addData(int v,string s);//adds data to vertex
+    void traverse(int v);//move from one node to another
+    bool isVisited(int);//checks if a node has been visited
+    
+};
+//x and y are connections and w is weight
+void graph::addEdge(int x,int y,int w)
+{
+    adj[x].push_back(y);
+    weights[x].push_back(w);
+}
+void graph::addDoubleEdge(int x,int y,int w)
+{
+    adj[x].push_back(y);
+    adj[y].push_back(x);
+    weights[x].push_back(w);
+    weights[y].push_back(w);
+}
+void graph::addVertex(int v)
+{
+    addEdge(v,v,0);
+    numVerts++;
+}
+void graph::showGraph()
+{
+    for(int i=0;i<numVerts;i++)
+    {
+        showVertex(i);
+    }
+}
+void graph::showVertex(int v)
+{
+    list<int>::iterator it;
+    list<int>::iterator wt;
+    std::cout<<data[v]<<std::endl;
+    for(it=adj[v].begin();it!=adj[v].end();++it)
+    {
+        std::cout<<*it<<std::endl;
+    }
+    std::cout<<"\n\n\n\n";
+    for(wt=weights[v].begin();wt!=weights[v].end();++wt)
+    {
+        std::cout<<*wt<<std::endl;
+    }
+}
+void graph::addData(int v,string s)
+{
+    data[v]=s;
+}
+bool graph::isVisited(int x)
+{
+    return visited[x];   
+}
+void graph::traverse(int v)
+{
+    visited[v]=true;
+    list<int>::iterator it=adj[v].begin();
+    int moves=getRand(0,5);
+    int i=0;
+    for(i=0;i<moves&&it!=adj[v].end();i++)
+    {
+        ++it;
+    }
+    std::cout<<"moved to vertex: "<<data[*it]<<std::endl;
+    list<int>::iterator wt=weights[v].begin();
+    for(wt=weights[v].begin();wt!=weights[v].end();++wt)
+    {
+        
+    }
+}
+
+
+
+int getRand(int a=1,int b=2)
+{
+    std::random_device rd;
+    std::mt19937::result_type seed = rd() ^ (
+            (std::mt19937::result_type)
+            std::chrono::duration_cast<std::chrono::seconds>(
+                std::chrono::system_clock::now().time_since_epoch()
+                ).count() +
+            (std::mt19937::result_type)
+            std::chrono::duration_cast<std::chrono::microseconds>(
+                std::chrono::high_resolution_clock::now().time_since_epoch()
+                ).count() );
+
+    std::mt19937 gen(seed);
+    std::uniform_int_distribution<unsigned> distrib(a,b);
+    
+    return distrib(gen);
+}
+int main()
+{
+    graph g;
+    for(int i=0;i<=5;i++)
+        g.addVertex(i);
+    g.addData(0,"Guntersville");
+    g.addData(1,"Hayden");
+    g.addData(2,"Montgomery");
+    g.addData(3,"Huntsville");
+    g.addData(4,"Birmingham");
+    g.addData(5,"Mobile");
+    
+    g.addDoubleEdge(5,2,0);
+    g.addDoubleEdge(2,4,0);
+    g.addDoubleEdge(4,1,0);
+    g.addDoubleEdge(4,3,0);
+    g.addDoubleEdge(1,0,0);
+    g.addDoubleEdge(0,3,0);
+    
+    int startingVert=getRand(0,5);
+    g.showVertex(startingVert);
+    g.traverse(startingVert);
+    std::cout<<"\n\n\n\n\n\n\n";
+    return 0;
+}
