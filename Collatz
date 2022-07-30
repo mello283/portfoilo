@@ -1,0 +1,27 @@
+#-------------------------------------------------------------------------------
+# Matt Morrison
+# Collatz conjecture / hailstone problem
+#-------------------------------------------------------------------------------
+
+def evenNum(x):
+    return x/2
+
+def oddNum(x):
+    return (3*x)+1
+
+def main():
+    x = 0
+    x = input("Input a number show how many jumps it takes")
+    x=int(x)
+    counter = 0
+    while x!=1:
+        counter += 1
+        if x%2==0:
+            x = evenNum(x)
+        elif x%2==1:
+            x = oddNum(x)
+        print(x)
+    print(x)
+    print("Number of jumps: ",counter)
+if __name__ == '__main__':
+    main()
