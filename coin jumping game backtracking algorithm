@@ -1,0 +1,160 @@
+//coin jumping game
+//uses a simple backtracking algorithm
+//singles jump two spaces
+//double stacks jump 1 space
+//cannot have more than coins per space
+
+#include <stdio.h>
+#include <iostream>
+#include <vector>
+#include <utility>
+#include <algorithm>
+#include <string>
+#include <chrono>
+#include <random>
+const int SIZE = 30; //1 based value SIZE-1 is the end
+int row[SIZE];
+bool goalreached=false;
+int movesMade=0;
+bool pause=false;
+int backingUp=1;
+int done=0;
+int start=0;
+
+void trackBack(int);
+void backTrack(int);
+void singleCoins(int);
+void doubleCoins(int);
+bool checkIfDone();
+int rollback();
+int rollback()
+{
+    for(int i=start;row[i]==0;i++)
+    {
+        start++;
+    }
+    return start;
+}
+bool checkIfDone()
+{
+    for(int i=0;i<SIZE;i++)
+    {
+        if(row[i]==1)
+            return false;
+    }
+    return true;
+}
+
+void doubleCoins(int pos)
+{
+    //display the values
+    if(pause)
+    std::cin.ignore();
+    std::cout<<"\ndouble\n";
+    for(int i=0;i<SIZE;i++)
+    {
+        std::cout<<row[i]<<" ";
+    }
+    std::cout<<"\n";
+
+
+    if(row[pos+1]==0&&row[pos]==1)
+    {
+        row[pos]--;
+        row[pos+1]++;
+        doubleCoins(pos+1);
+    }
+    //jump over a 2 high stack
+    if(row[pos+1]==2&&row[pos+2]!=2&&row[pos+2]!=NULL&&row[pos+1]!=NULL)
+    {
+        if(row[pos]>0)
+        {
+            row[pos]--;
+            row[pos+2]++;
+            doubleCoins(pos+1);
+        }
+
+    }
+
+}
+void singleCoins(int pos)
+{
+    //display the values
+    if(pause)
+        std::cin.ignore();
+    std::cout<<"\nsingle\n";
+    for(int i=0;i<SIZE;i++)
+    {
+        std::cout<<row[i]<<" ";
+    }
+    std::cout<<"\n";
+
+    if(row[pos]==1&&row[pos+1]==0)
+    {
+        row[pos]--;
+        row[pos+1]++;
+        singleCoins(pos+1);
+    }
+
+    if(row[pos+1]==0||row[pos+2]==0)
+    {
+        pos+1;
+    }
+    if(row[pos+3]!=NULL&&row[pos+2]!=NULL&&row[pos+1]!=NULL&&row[pos+3]<2&&row[pos+2]<2)//jump single coins or blanks
+    {
+        if(row[pos]>0)
+        {
+            row[pos]--;
+            row[pos+3]++;
+            singleCoins(pos+3);
+        }
+
+    }
+}
+
+
+int main()
+{
+    char choice='.';
+    std::cout<<"hit p for pause";
+    std::cin>>choice;
+    if(choice=='p')
+    pause=true;
+    for(int i=0;i<SIZE;i++)
+    {
+        row[i]=1;
+    }
+    for(int i=0;i<SIZE/3;i++)
+    {
+        movesMade++;
+        if(!goalreached)
+            singleCoins(i%SIZE);
+        else
+            break;
+    }
+    for(int i=0;i<SIZE*SIZE;i++)
+    {
+        movesMade++;
+        if(!goalreached)
+            doubleCoins(i%SIZE);
+        else
+            break;
+    }
+
+    if(pause)
+    {
+    for(int asdf=0;asdf<15;asdf++)
+    {
+        std::cout<<"\nmoves made: "<<movesMade<<std::endl;
+        std::cout<<"\nsize of array: "<<SIZE;
+        std::cin.ignore();
+    }
+    }
+    else
+    {
+        std::cout<<"\nmoves made: "<<movesMade<<std::endl;
+        std::cout<<"\nsize of array: "<<SIZE;
+        std::cin.ignore();
+    }
+    return 0;
+}
