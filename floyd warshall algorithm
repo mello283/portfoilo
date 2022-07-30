@@ -1,0 +1,92 @@
+#include <iostream>
+#include <utility>
+#include <algorithm>
+#include <vector>
+#include <string>
+#include <chrono>
+#include <random>
+const int in = 9999;
+const int verts=4;
+std::pair<int,int> searchPair;
+void print(int dist[][verts]);
+std::pair<int,int> floydWarshall(int graph[][verts]);
+int getRand(int,int);
+int getRand(int a=1,int b=2)
+{
+    std::random_device rd;
+    std::mt19937::result_type seed = rd() ^ (
+            (std::mt19937::result_type)
+            std::chrono::duration_cast<std::chrono::seconds>(
+                std::chrono::system_clock::now().time_since_epoch()
+                ).count() +
+            (std::mt19937::result_type)
+            std::chrono::duration_cast<std::chrono::microseconds>(
+                std::chrono::high_resolution_clock::now().time_since_epoch()
+                ).count() );
+
+    std::mt19937 gen(seed);
+    std::uniform_int_distribution<unsigned> distrib(a,b);
+
+    return distrib(gen);
+}
+std::pair<int,int> floydWarshall(int graph[][verts])
+{
+    int dist[verts][verts];
+    int i,j,k;
+    for(i=0;i<verts;i++)
+    {
+        for(j=0;j<verts;j++)
+        {
+            dist[i][j]=graph[i][j];
+        }
+    }
+    for(k=0;k<verts;k++)
+    {
+        for(i=0;i<verts;i++)
+        {
+            for(j=0;j<verts;j++)
+            {
+                if(dist[i][j]>dist[i][k]+dist[k][j]&&dist[k][j]!=in&&dist[i][k]!=in)
+                {
+                    dist[i][j] = dist[i][k]+dist[k][j];
+                }
+            }
+        }
+    }
+    print(dist);
+    searchPair.first=getRand(1,verts);
+    searchPair.second=getRand(1,verts);
+    return searchPair;
+}
+
+void print(int dist[][verts])
+{
+    for(int i=0;i<verts;i++)
+    {
+        for(int j=0;j<verts;j++)
+        {
+            if(dist[i][j]==in)
+                std::cout<<"INF";
+            else
+                std::cout<<dist[i][j];
+            std::cout<<" ";
+        }
+        std::cout<<"\n";
+    }
+}
+int main()
+{
+
+    int graph[verts][verts] = {{0,5,in,10},
+                              {in,0,3,in},
+                              {in,in,0,1},
+                              {in,in,in,0}};
+    searchPair = floydWarshall(graph);
+    if(graph[searchPair.first][searchPair.second]==in||graph[searchPair.first][searchPair.second]>10)
+        std::cout<<"weight of edge "<<searchPair.first<<" "<<searchPair.second<<" is INF "<<std::endl;
+    else
+        std::cout<<"weight of edge "<<searchPair.first<<" "<<searchPair.second<<" is "<<graph[searchPair.first][searchPair.second]<<std::endl;
+
+    return 0;
+}
+//source:https://www.geeksforgeeks.org/floyd-warshall-algorithm-dp-16/
