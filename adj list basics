@@ -1,0 +1,59 @@
+#include <stdio.h>
+#include <iostream>
+#include <vector>
+#include <utility>
+#include <algorithm>
+#include <string>
+#include <chrono>
+#include <random>
+#include <bits/stdc++.h>
+using namespace std;
+class graph
+{
+    public:
+    map<int,list<int>>adj;//map of edges
+    map<int,bool>visited;//map of visited nodes for traversal
+    map<int,list<int>>weights;//weight of edges
+    void addEdge(int,int,int);//adds the connection and weight
+    void addVertex(int v);//adds or overwrites the vertex at v
+    void showGraph();
+    void showVertex(int v);//shows connections for vertex v
+};
+void graph::addEdge(int x,int y,int w)
+{
+    adj[x].push_back(y);
+    weights[x].push_back(w);
+}
+void graph::addVertex(int v)
+{
+    addEdge(v,v,0);
+}
+void graph::showVertex(int v)
+{
+    list<int>::iterator it;
+    list<int>::iterator wt;
+    
+    for(it=adj[v].begin();it!=adj[v].end();++it)
+    {
+        std::cout<<*it<<std::endl;
+    }
+    std::cout<<"\n\n\n\n";
+    for(wt=weights[v].begin();wt!=weights[v].end();++wt)
+    {
+        std::cout<<*wt<<std::endl;
+    }
+}
+int main()
+{
+    graph g;
+    for(int i=0;i<=5;i++)
+        g.addVertex(i);
+    g.addEdge(0,1,1);
+    g.addEdge(2,1,2);
+    g.addEdge(3,2,3);
+    g.addEdge(0,3,4);
+    g.addEdge(2,5,5);
+    g.addEdge(0,4,234);
+    g.showVertex(0);
+    return 0;
+}
