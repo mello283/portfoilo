@@ -1,0 +1,63 @@
+; This program draws a chesboard
+
+INCLUDE Irvine32.inc
+
+.data
+    val1     dword  10000h
+
+.code
+
+printRow PROC USES ecx ebx
+    push ebp
+    mov ebp, esp
+
+    mov     ecx, 8
+    l2:
+        mov     ebx, ecx
+        and 	ebx, 00000001H     
+        jz      evenNum
+            mov     eax,[ebp+20]
+            jmp     endofif
+        evenNum:
+            mov     eax,[ebp+16]
+        endofif:
+        call    SetTextColor
+        mov     eax, 219
+        call    WriteChar
+        call    WriteChar
+        loop l2
+
+    mov esp, ebp
+    pop ebp
+    ret
+printRow ENDP
+
+main PROC
+    mov     dl,20  ;column
+    mov     dh,10  ;row
+    call    Gotoxy
+
+    mov     ecx, 8
+    l1:
+        mov     ebx, ecx
+        and 	ebx, 00000001H     
+        jz      evenNum
+            push    15
+            push    10
+            jmp     endofif
+        evenNum:
+            push    10
+            push    15
+        endofif:
+        call    printRow
+        add     esp, 8
+        inc     dh
+        call    Gotoxy
+        loop l1
+
+    mov     eax,white+(black*16)
+    call    SetTextColor
+    exit
+main ENDP
+END main
+
