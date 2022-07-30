@@ -1,0 +1,239 @@
+#include <iostream>
+#include <cstdlib>
+#include <string>
+#include <iomanip>
+#include <vector>
+#include <algorithm>
+#include <list>
+#include <utility>
+#include <functional>
+#include <map>
+using namespace std;
+template <typename T>
+class graph
+{
+    public:
+        graph(){};
+        graph(vector<pair<int,int>>edges){};
+        virtual adjacent(T x, T y)=0;
+        virtual vector<T> neighbors(T x)=0;
+        virtual void addNode(T x)=0;
+        virtual void addEdge(T x, T y)=0;
+        virtual void deleteEdge(T x, T y)=0;
+        virtual void bfs(T startNode,function<void(T)> process)=0;
+        virtual void dfs(T startNode,function<void(T)> process)=0;
+};
+
+template<typename nodeType>
+class adjList:public graph<nodeType>
+{
+    using nodes = vector<nodeType>;
+    using edges = list<pair<int,int>>
+    nodes nodeVector;
+    vector<edges>edgeVector
+    map<int,bool> visited;
+    void dfsHelper(int nodeId,function<void<nodeType> process)
+    {
+        visited[nodeId]=true;
+        process(nodeVector[nodeId]);
+        edges edgeList = edgeVector[nodeId];
+        for(auto edge:edgeList)
+        {
+            if(!visited[edge.second])
+            {
+                dfsHelper(edge.second,process);
+            }
+        }
+    }
+    void bfsHelper(int nodeId,function<void(nodeType)>process)
+    {
+        list pending;
+        visited[nodeId] = true;
+        pending.push_back(nodeId);
+        while(!pending.empty())
+        {
+            nodeId = pending.front();
+            process(nodeVector[nodeId]);
+            pending.pop_front();
+            edges edgeList = edgeVector[nodeId];
+            for(auto edge:edgeList)
+            {
+                if(!visited[edge.second])
+                {
+                    visited[edge.second]=true;
+                    pending.push_back(edge.second);
+                }
+            }
+        }
+    }
+    adjList() : graph<nodeType>(){}
+    adjList() : graph<nodeType>(const adjList& other)
+    {
+        copy(other.nodeVector.begin(),
+            other.nodeVector.end(),
+            this->nodeVector.begin());
+        copy(other.edgeVector.begin(),
+            other.edgeVector.end(),
+            this->edgemap.end());
+    }
+    adjList& operator=(const adjList &source)
+    {
+        copy(source.nodeVector.begin(),
+            source.nodeVector.end(),
+            this->nodeVector.begin());
+        copy(source.edgeVector.begin(),
+            source.edgeVector.end(),
+            this->edgemap.end());
+    }
+    //add nodes from the list to the graph
+    adjlist(vector<nodeType> &newNodes, vector<pair<int,int>> newEdges) :
+    graph<nodeType>(newNodes,newEdges)
+    {
+        for(auto aNewNode : newNodes)
+        {
+            nodeVector.push_back(aNewNode)
+        }
+        for(auto e : newEdges)
+        {
+            int currentSize = nodeVector.size();
+            if((e.first >= currentSize)||(e.second >= currentSize))
+            {
+                cerr<<"Edge from "<<edge.first<<" to "<<edge.second
+                <<" not in graph"<<endl;
+            }
+            else
+            {
+                int edgeSource = edge.first;
+                edgeVector[edgeSource].push_back(edge);
+            }
+        }
+    }
+    //clean up after data is used
+    ~adjList(){}
+
+    virtual bool adjacent(nodeType x,nodeType y)
+    {
+        bool found = false;
+        auto xLocation = find(nodeVector.begin(),nodeVector.end(),x);
+        auto yLocation = find(nodeVector.begin(),nodeVector.end(),y);
+        if(xLocation != nodeVector.end() && yLocation != nodeVector.end())
+        {
+            int xIndex = xLocation - nodeVector.begin();
+            int yIndex = xLocation - nodeVector.begin();
+            edges edg = edgeVector[xIndex];
+            pair<int,int> *searchEdge = new pair<int,int>(xIndex,yIndex);
+            auto pos = find_if(edges.begin(),
+                edges.end(),[&](pair<int,int> const &b)->bool
+                {
+                    return b.second == searchEdge->second;
+                });
+                if(pos != edges.end()){found = true;}
+        }
+        else
+        {
+            found = false;
+        }
+            return (found);
+        }
+
+    }
+    virtual vector<nodeType> neighbors(nodeType xIndex)
+    {
+        vector<nodeType> *nodes = new vector<nodeType>();
+        auto xLocation = find(nodeVector.begin(),nodeVector.end(),x);
+        if(xLocation = nodeVector.end())
+        {
+            int xIndex = xLocation - nodeVector.begin();
+            edges outEdges = edgeVector[xIndex];
+            for(auto edge : outEdges)
+            {
+                nodes->push_back(nodeVector[edge.second]);
+            }
+        }
+        return *nodes;
+    }
+
+    virtual void addNode(nodeType node)
+    {
+        nodeVector.push_back(node);
+        int lastEntry = nodeVector.size()-1;
+        auto nodepair = make_pair(lastEntry,lastEntry);
+        edges newEdgeList;
+        newEdgeList.push_back(nodepair);
+        edgeVector.push_back(newEdgeList);
+    }
+
+    virtual void addEdge(nodeType x,nodeType y)
+    {
+        auto xLocation = find(nodeVector.begin(),
+                              nodeVector.end(),
+                              x);
+        auto yLocation = find(nodeVector.begin(),
+                      nodeVector.end(),
+                      y);
+        if(xLocation == nodeVector.end())
+        {
+            addNode(x);
+        }
+        if(yLocation == nodeVector.end())
+        {
+            addNode(y);
+        }
+        int xIndex = xLocation - nodeVector.begin();
+        int yIndex = yLocation - nodeVector.begin();
+        pair<int,int> forwardEdge = make_pair(xIndex,yIndex);
+        edgeVector[xIndex].push_back(forwardEdge);
+        pair<int,int> backwardEdge = make_pair(xIndex,yIndex);
+        edgeVector[yIndex].push_back(backwardEdge);
+    }
+
+    virtual void deleteEdge(nodeType x, nodeType y)
+    {
+        auto xLocation = find(nodeVector.begin(),
+                              nodeVector.end(),
+                              x);
+        auto yLocation = find(nodeVector.begin(),
+                              nodeVector.end(),
+                              y);
+        if((xLocation)!=nodeVector.end())&&(yLocation!=nodeVector.end()))
+        {
+            pair<int,int>forwardEdge = make_pair(xIndex,yIndex);
+            pair<int,int>backwardEdge = make_pair(yIndex,xIndex);
+            edgeVector[xIndex].remove(forwardEdge);
+            edgeVector[yIndex].remove(backwardEdge);
+        }
+        else
+        {
+            cerr<<"deleteEdge() failed. No edge from "
+            <<xIndex<<" to "<<yIndex<<endl;
+        }
+    }
+    virtual void bfs(nodeType startNode,function<void(nodeType)>process)
+    {
+        auto xLocation = find(nodeVector.begin(),nodeVector.end(),startNode);
+        if(xLocation != nodeVector.end())
+        {
+            int xIndex = xLocation - nodeVector.begin();
+            visited.clear();
+            bfsHelper(xIndex,process);
+        }
+    }
+    virtual void bfs(nodeType startNode,function<void(nodeType)>process)
+    {
+        auto xLocation = find(nodeVector.begin(),nodeVector.end(),startNode);
+        if(xLocation != nodeVector.end())
+        {
+            int xIndex = xLocation - nodeVector.begin();
+            visited.clear();
+            dfsHelper(xIndex,process);
+        }
+    }
+
+};
+
+
+int main()
+{
+
+    return 0;
+}
