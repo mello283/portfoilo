@@ -1,0 +1,78 @@
+//mutation of a bacterial colony week by week
+#include <iostream>
+#include <ctime>
+using namespace std;
+int main()
+{
+    unsigned seed;
+    seed=time(0);
+    srand(seed);
+    int n=13;
+    int *ptr;
+    ptr = new int[n];
+    int *sPtr=ptr;
+    int i=0;
+    int s=0;
+    int r = (rand()%4)+1;
+    *ptr=2;
+    s+=*ptr;
+    ptr++;
+    *ptr=2;
+    s+=*ptr;
+    //fill memory with fib numbers
+    int ptr2=*sPtr;
+    for(i=0;i<n;i++)
+    {
+        *ptr=ptr2;
+        ptr2=s;
+        s=*ptr+ptr2;
+        ptr++;
+    }
+    //read out
+    ptr=sPtr;
+    for(i=0;i<n;i++)
+    {
+        cout<<*ptr<<" ";
+        ptr++;
+    }
+    cout<<"\nRandom num: "<<r<<endl;
+    cout<<"\n\n";
+//    fall back to prev week
+    for(i=0;i<r;i++)
+    {
+        ptr--;
+    }
+    //jump back 3 values and mutate
+    int *newWeek=ptr;
+    int *newEnd=newWeek+4;
+    //erase the values
+    for(ptr=newWeek+1;ptr<=newEnd;ptr++)
+    {
+        *ptr=0;
+    }
+    cout<<"\nnew week"<<*newWeek<<endl;
+    //add numbers back for next 3 positions
+//    ptr2=ptr;
+    s=0;
+    for(ptr=newWeek+1;ptr<=newEnd;ptr++)
+    {
+        *ptr=ptr2;
+        ptr2=s;
+        s=*ptr+ptr2;
+        ptr++;
+    }
+    for(ptr=sPtr;ptr<=newWeek;ptr++)
+    {
+        cout<<*ptr<<endl;
+    }
+    for(ptr=newWeek+1;ptr<=newWeek;ptr++)
+    {
+        *ptr=ptr2;
+        ptr2=s;
+        s=*ptr+ptr2;
+        ptr++;
+    }
+
+//    delete ptr;
+    return 0;
+}
