@@ -1,0 +1,543 @@
+#include <iostream>
+#include <fstream>
+#include <cmath>
+#include <iomanip>
+#include "ListInt.h"
+int main()
+  {
+      ofstream output;
+      output.open("templateMain.txt");
+  	List<ET> a,b;  int endit;
+
+	for (int i=1;i<=20;i++)
+	   a.insertAfter(i);
+	cout << "List a : " << endl;
+	output << "List a : " << endl;
+    	cout << "  "  << a << endl;
+    	output << "  "  << a << endl;
+	cout << "Number of elements in a - " << a.size() << endl;
+	output << "Number of elements in a - " << a.size() << endl;
+
+	for (int i=1;i<=10;i++)
+	   b.insertBefore(i);
+	cout << "List b : " << endl;
+	output << "List b : " << endl;
+    	cout << "  "  <<  b << endl;
+    	output << "  "  <<  b << endl;
+	cout << "Number of elements in b - " << b.size() << endl;
+	output << "Number of elements in b - " << b.size() << endl;
+
+	if ( a == b ){
+	    cout << "List a & b are equal" << endl;
+	    output << "List a & b are equal" << endl;}
+	  else{
+	    cout << "List a & b are Not equal" << endl;
+	    output << "List a & b are Not equal" << endl;}
+
+	a.first();
+	b.first();
+	cout << "First element in list a & b: " << a.getElement() << ", "<< b.getElement() << endl;
+	output << "First element in list a & b: " << a.getElement() << ", "<< b.getElement() << endl;
+	a.last();
+	b.last();
+	cout << "Last element in list a & b: " << a.getElement() << ", "<< b.getElement() << endl;
+	output << "Last element in list a & b: " << a.getElement() << ", "<< b.getElement() << endl;
+
+	cout << endl << endl << " Start of new stuff" << endl;
+	output << endl << endl << " Start of new stuff" << endl;
+
+	b.clear();
+	cout << "Empty List b:  " << b << endl;
+	output << "Empty List b:  " << b << endl;
+
+	if ( a == b )
+    {
+	    cout << "List a & b are equal" << endl;
+	    output << "List a & b are equal" << endl;
+    }
+    else
+    {
+	    cout << "List a & b are Not equal" << endl;
+	    output << "List a & b are Not equal" << endl;
+    }
+	for (int i=1;i<=10;i++)
+	   b.insertBefore(i*5);
+	cout << "List b : " << endl << b << endl;
+	output << "List b : " << endl << b << endl;
+
+	a.setPos(5);
+	b.first();
+	for ( int i=1; i<4; i++)
+	{
+	   b.replace(a.getElement());
+	   a.erase();
+	   b.next();
+	}
+
+	cout << "Modified Object 'a' (shorter) " << endl;
+		output << "Modified Object 'a' (shorter) " << endl;
+    	cout << "List a: " << a << endl;
+    	    	output << "List a: " << a << endl;
+	cout << "Modified Object 'b' " << endl;
+		output << "Modified Object 'b' " << endl;
+    	cout << "List b: " << b << endl;
+    	    	output << "List b: " << b << endl;
+
+	for (int i=1;i<=10;i++)
+	   b.insertBefore(i);
+
+	List<ET> c(b);
+	cout << "Copy Constructor c(b)" << endl;
+    	cout << "List b : " << b << endl;
+    	cout << "List c : " << c << endl;
+    			output << "Copy Constructor c(b)" << endl;
+    	output << "List b : " << b << endl;
+    	output << "List c : " << c << endl;
+
+	if ( c == b )
+	    cout << "List c & b are equal" << endl;
+	    output << "List c & b are equal" << endl;
+	  else
+	    cout << "List c & b are Not equal" << endl;
+	    output << "List c & b are Not equal" << endl;
+
+
+	List<ET> e;
+	e = c;
+	cout << "Object 'c' assigned to Object 'e':" << endl;
+		output << "Object 'c' assigned to Object 'e':" << endl;
+    	cout << "List c : " << c << endl;
+    	    	output << "List c : " << c << endl;
+    	cout << "List e : " << e << endl;
+    	    	output << "List e : " << e << endl;
+
+	b.first();
+	endit = b.size();
+	for ( int i = 1; i < endit; b.next(), i++)
+	{
+		b.insertBefore(b.getElement()*(-1));
+		b.next(); b.next();
+	}
+	cout << "Results after some inserts on b " << endl;
+		output << "Results after some inserts on b " << endl;
+    	cout << "List b : " << b << endl;
+    	    	output << "List b : " << b << endl;
+
+	a.first();
+	endit = a.size();
+	for ( int i = 1; i < endit; a.next(), i++)
+	{
+		a.replace(a.getPos()+a.getElement());
+		a.next();
+	}
+	cout << "Results after some weird stuff on list a" << endl;
+		output << "Results after some weird stuff on list a" << endl;
+    	cout << "List a : " << a << endl;
+    	    	output << "List a : " << a << endl;
+
+    List<ET> alist;
+    alist.clear();
+    for (int i=1;i<=10;i++)
+	   alist.insertAfter(i);
+	alist.first();
+	cout << "New List alist with positions above: " << endl;
+		output << "New List alist with positions above: " << endl;
+    for (int i=1;i<=10;i++) {
+		cout << setw(5) << alist.getPos();
+				output << setw(5) << alist.getPos();
+		alist.next();
+	}
+	cout << endl;
+		output << endl;
+	alist.first();
+	for (int i=1;i<=10;i++) {
+		cout << setw(5) << alist.getElement();
+				output << setw(5) << alist.getElement();
+		alist.next();
+	}
+	cout << endl;
+		output << endl;
+
+	List<ET> d(alist);
+	d += alist;
+
+	alist.first();
+	endit = alist.size();
+	cout << "show 'alist' object after 'd+= alist' " << alist << endl;
+		output << "show 'alist' object after 'd+= alist' " << alist << endl;
+	for (int i=1;i<=endit;i++) {
+		cout << setw(5) << alist.getElement();
+				output << setw(5) << alist.getElement();
+		alist.next();
+	}
+
+	d.first();
+	endit = d.size();
+	cout << "show 'd' object after 'd+= alist' " << d << endl;
+		output << "show 'd' object after 'd+= alist' " << d << endl;
+	for (int i=1;i<=endit;i++) {
+		cout << setw(5) << d.getElement();
+				output << setw(5) << d.getElement();
+		d.next();
+	}
+
+	cout << endl << "  check out boundary conditions" << endl;
+		output << endl << "  check out boundary conditions" << endl;
+	List<ET> sq;
+	cout << "number of elements in empty sq list = " << sq.size() << endl;
+		output << "number of elements in empty sq list = " << sq.size() << endl;
+	sq.first();
+	sq.prev();
+	sq.erase();
+	sq.last();
+	sq.setPos(5);
+	cout << "empty sq values " << sq << endl;
+		output << "empty sq values " << sq << endl;
+	sq.insertBefore(3333);
+	cout << "sq values " << sq << endl;
+		output << "sq values " << sq << endl;
+	sq.next(); sq.next();
+	cout << "sq.getElement() = " << sq.getElement() << endl;
+		output << "sq.getElement() = " << sq.getElement() << endl;
+	cout << "sq list = " << sq << endl;
+		output << "sq list = " << sq << endl;
+	return 0;
+  }
+
+
+
+
+
+#ifndef LIST_H_INCLUDED
+#define LIST_H_INCLUDED
+#include <iostream>
+#include <cstdlib>
+#include <fstream>
+using namespace std;
+
+const int SIZE=213;
+typedef int ET;
+template<typename ET>
+class List
+{
+private:
+    ET  ary[SIZE];
+    int pos=0;
+    int mySize=0;
+public:
+    List();
+    List(List &p2);
+    ofstream output;
+    bool listEmpty();
+    bool listFull();
+    void first();
+    void last();
+    void prev();
+    void next();
+    int  getPos();
+    void setPos(int);
+    void insertBefore(ET);
+    void insertAfter(ET);
+    ET  getElement();
+    int  size();
+    int  capacity();
+    void replace(ET);
+    void clear();
+    void erase();
+    bool operator==(const List&L2);
+    bool operator!=(const List&L2);
+    ET   operator+(const List&L2);
+    List operator+=(List&L2);
+    void operator=(List&L2);
+    friend ostream& operator<<(ostream &out, const List& data);
+};
+template<typename ET>
+List<ET>::List()
+{
+    int pos=0;
+    int mySize=0;
+
+}
+template<typename ET>
+List<ET>::List(List &L)
+{
+    int pos=0;
+    int mySize=0;
+    L.first();
+    for(int i=0;i<size();i++)
+    {
+        ary[i]=L.getElement();
+        L.next();
+    }
+}
+template<typename ET>
+void List<ET>::first()
+{
+    pos=0;
+}
+template<typename ET>
+void List<ET>::last()
+{
+    if(mySize>0)
+        pos=mySize;
+    else
+        pos=0;
+}
+template<typename ET>
+void List<ET>::next()
+{
+    if(pos+1<=mySize)
+        pos++;
+}
+template<typename ET>
+void List<ET>::prev()
+{
+    if(pos-1>=0)
+        pos--;
+}
+template<typename ET>
+void List<ET>::setPos(int value)
+{
+    if(value==0)
+        pos=0;
+    if(value>0&&value<mySize)
+        pos=value;
+}
+template<typename ET>
+int List<ET>::getPos()
+{
+    return pos;
+}
+template<typename ET>
+void List<ET>::erase()
+{
+    ET a;
+    if(pos==0)
+    {
+        ary[0]=0;
+    }
+    else
+    {
+        ET a=ary[pos-1];
+    }
+    for(int i=pos;i<size();i++)
+    {
+        ary[i]=ary[i+1];
+    }
+    if(pos>0)
+    {
+        ary[pos-1]=a;
+    }
+    if(mySize>0)
+        mySize--;
+}
+template<typename ET>
+int List<ET>::size()
+{
+    if(mySize>0)
+    {
+        if(mySize>=SIZE)
+            return mySize-1;
+        else
+            return mySize;
+    }
+    else
+        return 0;
+}
+template<typename ET>
+int List<ET>::capacity()
+{
+    return SIZE;
+}
+template<typename ET>
+void List<ET>::insertBefore(ET val)
+{
+    ET tmp,tmp2;
+    int tPos;
+    if(listEmpty())
+        ary[0]=val;
+    if(mySize==SIZE-1)
+    {
+        tmp=val;
+        tPos=pos;
+        for(int i=size()+1;i>tPos;i--)
+        {
+            ary[i]=ary[i-1];
+        }
+        ary[tPos]=tmp;
+    }
+    else
+    {
+        ary[mySize+1]=val;
+        tmp2=ary[pos];
+        for(int i=size();i>pos-1;i--)
+        {
+            tmp=ary[i+1];
+            ary[i+1]=ary[i];
+            ary[i]=tmp;
+        }
+        ary[mySize+1]=tPos;
+        pos++;
+        mySize++;
+    }
+}
+template<typename ET>
+void List<ET>::insertAfter(ET val)
+{
+    ET tmp,tmp2;
+    int tPos=0;
+    if(listEmpty())
+        ary[0]=val;
+    if(mySize==SIZE-1)
+    {
+        tmp=val;
+        tPos=pos+1;
+        for(int i=size()+1;i>tPos;i--)
+        {
+            ary[i]=ary[i-1];
+        }
+        ary[tPos]=tmp;
+    }
+    else
+    {
+        ary[mySize+1]=val;
+        tmp2=ary[pos];
+        for(int i=size();i>pos-1;i--)
+        {
+            tmp=ary[i+1];
+            ary[i+1]=ary[i];
+            ary[i]=tmp;
+        }
+        ary[mySize+1]=tPos;
+        pos++;
+        mySize++;
+    }
+
+
+}
+template<typename ET>
+void List<ET>::replace(ET val)
+{
+    ary[pos]=val;
+}
+template<typename ET>
+void List<ET>::clear()
+{
+    for(int i=0;i<mySize;i++)
+        ary[i]=0;
+    pos=0;
+    mySize=0;
+}
+template<typename ET>
+bool List<ET>::listEmpty()
+{
+    int vals=0;
+    for(int i=0;i<SIZE-1;i++)
+    {
+        if(ary[i]!=0)
+        {
+            vals++;
+        }
+    }
+    if(vals==0)
+        return true;
+    else
+        return false;
+}
+template<typename ET>
+bool List<ET>::listFull()
+{
+    if(mySize==SIZE-1)
+        return true;
+    else
+        return false;
+}
+template<typename ET>
+ET List<ET>::getElement()
+{
+    if(size()==0)
+    {
+        return 0;
+    };
+    return ary[pos];
+}
+template<typename ET>
+bool List<ET>::operator==(const List&L2)
+{
+    if(mySize==L2.mySize)
+    {
+        for(int i=0;i<mySize-1;i++)
+        {
+            if(ary[i]!=L2.ary[i])
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+template<typename ET>
+ostream& operator<<(ostream &out,List<ET> &L1)
+{
+    L1.last();
+    if(L1.size()==0)
+    {
+        out<<"\nNo data!\n";
+        return out;
+    }
+    else{
+    L1.first();
+    for(int i=0;i<L1.size();i++)
+    {
+        out<<L1.getElement()<<",";
+        L1.next();
+        if(L1.getPos()>=SIZE)
+            i=SIZE;
+    }
+    return out;
+    }
+}
+template<typename ET>
+bool List<ET>::operator!=(const List&L2)
+{
+    return !(operator==(L2));
+}
+template<typename ET>
+ET List<ET>::operator+(const List&L2)
+{
+    ET sum;
+    cout<<endl;
+    output<<endl;
+    for(int i=0;i<SIZE-1;i++)
+        sum+=ary[i]+L2.ary[i];
+    return sum;
+}
+template<typename ET>
+List<ET> List<ET>::operator+=(List&L2)
+{
+    first();
+    L2.first();
+    for(int i=0;i<size();i++)
+    {
+        L2.replace(ary[i]+L2.getElement());
+        L2.next();
+        next();
+    }
+    return L2;
+}
+template<typename ET>
+void List<ET>::operator=(List&L2)
+{
+    first();
+    L2.first();
+    for(int i=0;i<size();i++)
+    {
+        L2.insertBefore(ary[i]);
+//        ary[i]=L2.ary[i];
+    }
+}
+#endif // LIST_H_INCLUDED
