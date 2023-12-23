@@ -1,4 +1,4 @@
-# portfoilo
+# Portfoilo
 Listing of all my projects from school, challenge websites and personal projects
 All of the code is in c++ but I have used other languages such as Python, C#, and PHP
 The quicklist is for what I consider commonly viewed skillsets in workplaces
