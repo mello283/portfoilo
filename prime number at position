@@ -1,3 +1,5 @@
+//Finds the 1st, 2nd, 3rd etc prime starting with 2
+
 #include <iostream>
 #include <cmath>
 using namespace std;
