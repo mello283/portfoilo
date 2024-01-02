@@ -1,4 +1,4 @@
-; This program draws a chesboard
+; This program draws a chessboard
 
 INCLUDE Irvine32.inc
 
