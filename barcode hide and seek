@@ -1,4 +1,4 @@
-//Inspired by the old scannerz toy from the early 2000s. If you scan a barcode it logs that barcode and then it tells you if the one you are scanning is the right one. 
+//Scan a barcode somewhere around the house, then get someone to figure out what you scanned with a confirming beep sound
 //Combine this code with a mobile device and c++ compiler for maximum fun
 #include <iostream>
 using namespace std;
